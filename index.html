@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruby Nails — Salón de Uñas Vietnamita · Oviedo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #F5EDE4;
+            --accent-pink: #E8C4B8;
+            --accent-gold: #C9A882;
+            --text-dark: #2C1A12;
+            --white: #FFFFFF;
+            --font-display: 'Cormorant Garamond', serif;
+            --font-body: 'Jost', sans-serif;
+            --shadow-warm: 0 10px 30px rgba(201, 168, 130, 0.15);
+            --shadow-hover: 0 15px 40px rgba(201, 168, 130, 0.25);
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { font-family: var(--font-body); background-color: var(--bg-main); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        
+        .cursor { position: fixed; top: 0; left: 0; width: 20px; height: 20px; background-color: var(--accent-gold); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background-color 0.3s; mix-blend-mode: multiply; }
+        .cursor.hover { width: 50px; height: 50px; background-color: var(--accent-pink); opacity: 0.8; }
+        
+        h1, h2, h3, h4, h5, h6, .display-text { font-family: var(--font-display); font-weight: 400; line-height: 1.2; }
+        h1 { font-size: clamp(3rem, 8vw, 5.5rem); }
+        h2 { font-size: clamp(2.5rem, 5vw, 4rem); }
+        h3 { font-size: clamp(1.8rem, 3vw, 2.5rem); }
+        p { font-size: 1.1rem; font-weight: 300; }
+        a { color: inherit; text-decoration: none; }
+        
+        .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 5%; }
+        section { padding: 8rem 0; position: relative; }
+        .separator { height: 1px; width: 100%; background-color: var(--accent-gold); opacity: 0.3; }
+        
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 1rem 2.5rem; font-family: var(--font-body); font-size: 1rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 0; transition: var(--transition); position: relative; overflow: hidden; }
+        .btn-solid { background-color: var(--accent-gold); color: var(--white); border: 1px solid var(--accent-gold); }
+        .btn-solid:hover { background-color: var(--text-dark); border-color: var(--text-dark); color: var(--white); }
+        .btn-outline { background-color: transparent; color: var(--text-dark); border: 1px solid var(--text-dark); }
+        .btn-outline:hover { background-color: var(--text-dark); color: var(--white); }
+        
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 1s ease-out, transform 1s ease-out; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.3s; }
+        .stagger-3 { transition-delay: 0.5s; }
+        
+        nav { position: fixed; top: 0; left: 0; width: 100%; padding: 1.5rem 0; z-index: 1000; transition: var(--transition); }
+        nav.scrolled { background-color: rgba(245, 237, 228, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 1rem 0; border-bottom: 1px solid rgba(201, 168, 130, 0.2); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: var(--font-display); font-size: 1.8rem; font-weight: 600; letter-spacing: 0.02em; }
+        .nav-links { display: none; gap: 3rem; }
+        @media (min-width: 768px) { .nav-links { display: flex; } }
+        .nav-links a { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 1px; background-color: var(--text-dark); transition: var(--transition); }
+        .nav-links a:hover::after { width: 100%; }
+        
+        #hero { min-height: 100vh; display: flex; align-items: center; position: relative; padding-top: 80px; overflow: hidden; }
+        .hero-shapes { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .shape-1 { position: absolute; top: -10%; right: -5%; width: 50vw; height: 50vw; background-color: var(--accent-pink); border-radius: 50%; filter: blur(80px); opacity: 0.4; }
+        .shape-2 { position: absolute; bottom: -10%; left: -10%; width: 40vw; height: 40vw; background-color: var(--white); border-radius: 50%; filter: blur(60px); opacity: 0.6; }
+        .hero-content { max-width: 800px; }
+        .hero-subtitle { font-size: 1.2rem; margin: 2rem 0 3rem; color: rgba(44, 26, 18, 0.8); max-width: 600px; }
+        .hero-btns { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        
+        .about-grid { display: grid; grid-template-columns: 1fr; gap: 4rem; align-items: center; }
+        @media (min-width: 992px) { .about-grid { grid-template-columns: 5fr 6fr; gap: 8rem; } }
+        .about-text p { margin-bottom: 1.5rem; }
+        .about-quote { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-style: italic; color: var(--accent-gold); line-height: 1.3; position: relative; padding-left: 2rem; }
+        .about-quote::before { content: '"'; position: absolute; top: -20px; left: -10px; font-size: 6rem; color: var(--accent-pink); opacity: 0.5; font-family: var(--font-display); }
+        
+        .services-header { text-align: center; margin-bottom: 5rem; }
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 3rem 5rem; max-width: 1000px; margin: 0 auto; }
+        @media (min-width: 768px) { .menu-grid { grid-template-columns: 1fr 1fr; } }
+        .menu-item { display: flex; flex-direction: column; }
+        .menu-header { display: flex; align-items: baseline; width: 100%; margin-bottom: 0.5rem; }
+        .menu-title { font-family: var(--font-display); font-size: 1.6rem; color: var(--text-dark); white-space: nowrap; }
+        .menu-line { flex-grow: 1; border-bottom: 1px dashed var(--accent-gold); margin: 0 1rem; opacity: 0.6; }
+        .menu-desc { font-size: 1rem; color: rgba(44, 26, 18, 0.7); font-weight: 300; line-height: 1.5; }
+        
+        .results-header { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 4rem; }
+        @media (min-width: 768px) { .results-header { flex-direction: row; justify-content: space-between; align-items: flex-end; } .results-header h2 { max-width: 500px; } .results-header p { max-width: 400px; text-align: right; } }
+        .results-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+        @media (min-width: 768px) { .results-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .results-grid { grid-template-columns: repeat(3, 1fr); } }
+        .gallery-item { position: relative; border-radius: 4px; overflow: hidden; background-color: transparent; }
+        .gallery-item img { width: 100%; height: auto; display: block; transition: transform 0.8s ease; }
+        .gallery-item:hover img { transform: scale(1.05); }
+        
+        .reviews-section { background-color: var(--white); padding: 8rem 0; }
+        .reviews-header { text-align: center; margin-bottom: 4rem; }
+        .carousel-container { position: relative; width: 100%; overflow: hidden; padding: 2rem 0; }
+        .carousel-track { display: flex; transition: transform 0.5s ease-in-out; gap: 2rem; }
+        .review-card { flex: 0 0 100%; background-color: var(--bg-main); padding: 3rem 2rem; border: 1px solid rgba(201, 168, 130, 0.3); display: flex; flex-direction: column; justify-content: space-between; }
+        @media (min-width: 768px) { .review-card { flex: 0 0 calc(50% - 1rem); } }
+        @media (min-width: 1024px) { .review-card { flex: 0 0 calc(33.333% - 1.33rem); } }
+        .stars { display: flex; gap: 0.2rem; margin-bottom: 1.5rem; color: var(--accent-gold); }
+        .stars svg { width: 20px; height: 20px; fill: currentColor; }
+        .review-text { font-family: var(--font-display); font-size: 1.3rem; font-style: italic; margin-bottom: 2rem; line-height: 1.4; }
+        .review-author { font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.9rem; }
+        .carousel-controls { display: flex; justify-content: center; gap: 1rem; margin-top: 3rem; }
+        .carousel-btn { width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--accent-gold); background: transparent; display: flex; align-items: center; justify-content: center; color: var(--accent-gold); transition: var(--transition); }
+        .carousel-btn:hover { background-color: var(--accent-gold); color: var(--white); }
+        .reviews-cta { text-align: center; margin-top: 4rem; }
+        
+        .visit-grid { display: grid; grid-template-columns: 1fr; gap: 4rem; }
+        @media (min-width: 992px) { .visit-grid { grid-template-columns: 1fr 1fr; gap: 6rem; } }
+        .visit-info { display: flex; flex-direction: column; justify-content: center; }
+        .info-item { margin-bottom: 2rem; display: flex; align-items: flex-start; gap: 1rem; }
+        .info-icon { color: var(--accent-gold); flex-shrink: 0; margin-top: 0.2rem; }
+        .info-text h4 { font-family: var(--font-body); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; color: rgba(44, 26, 18, 0.6); }
+        .info-text p { font-size: 1.2rem; }
+        .map-container { width: 100%; height: 100%; min-height: 400px; }
+        .map-container iframe { width: 100%; height: 100%; border: none; filter: grayscale(0.3) contrast(1.1) sepia(0.2); }
+        
+        #reserva { background-color: var(--accent-pink); text-align: center; padding: 10rem 0; }
+        .reserva-content { max-width: 600px; margin: 0 auto; }
+        .reserva-content h2 { margin-bottom: 1rem; }
+        .reserva-content p { margin-bottom: 3rem; font-size: 1.2rem; }
+        .reserva-btns { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; margin-bottom: 3rem; }
+        @media (min-width: 576px) { .reserva-btns { flex-direction: row; justify-content: center; } }
+        .reserva-note { font-size: 0.9rem; opacity: 0.8; }
+        
+        footer { background-color: var(--text-dark); color: var(--white); padding: 6rem 0 2rem; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 4rem; margin-bottom: 4rem; }
+        @media (min-width: 768px) { .footer-grid { grid-template-columns: 2fr 1fr 1.5fr 1fr; } }
+        .footer-brand h3 { font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--accent-gold); }
+        .footer-brand p { color: rgba(255, 255, 255, 0.6); font-size: 1rem; }
+        .footer-links h4, .footer-social h4, .footer-info h4 { font-family: var(--font-body); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1.5rem; color: var(--accent-gold); }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.8rem; }
+        .footer-links a { color: rgba(255, 255, 255, 0.8); transition: var(--transition); }
+        .footer-links a:hover { color: var(--white); padding-left: 5px; }
+        .social-icons { display: flex; gap: 1rem; }
+        .social-icons a { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%; color: var(--white); transition: var(--transition); }
+        .social-icons a:hover { background-color: var(--accent-gold); border-color: var(--accent-gold); }
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); }
+    </style>
+</head>
+<body>
+    <div class="cursor" id="cursor"></div>
+    <nav id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">Ruby Nails</a>
+            <div class="nav-links">
+                <a href="#sobre-nosotros" class="hover-target">Nosotros</a>
+                <a href="#servicios" class="hover-target">Servicios</a>
+                <a href="#resultados" class="hover-target">Resultados</a>
+                <a href="#resenas" class="hover-target">Reseñas</a>
+                <a href="#visitanos" class="hover-target">Visítanos</a>
+            </div>
+        </div>
+    </nav>
+    <header id="hero">
+        <div class="hero-shapes">
+            <div class="shape-1"></div>
+            <div class="shape-2"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="fade-in stagger-1">El arte de las uñas perfectas, en Oviedo</h1>
+                <p class="hero-subtitle fade-in stagger-2">Más de 4 años transformando manos. Duración real: hasta mes y medio.</p>
+                <div class="hero-btns fade-in stagger-3">
+                    <a href="#reserva" class="btn btn-solid hover-target">Reservar cita</a>
+                    <a href="#servicios" class="btn btn-outline hover-target">Ver servicios</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="separator"></div>
+    <section id="sobre-nosotros">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-text fade-in">
+                    <h2>Más de 4 años creando belleza en Oviedo</h2>
+                    <br>
+                    <p>Somos tu salón vietnamita de confianza. Nos dedicamos a perfeccionar la técnica artesanal para ofrecerte resultados impecables que combinan elegancia y durabilidad.</p>
+                    <p>Trabajamos exclusivamente con materiales de la más alta calidad y brindamos un trato cercano y personalizado. Nuestro mayor orgullo son las clientas que nos eligen y repiten mes tras mes, confiando en nuestras manos para cuidar las suyas.</p>
+                </div>
+                <div class="about-quote-container fade-in stagger-2">
+                    <div class="about-quote">
+                        Llevo 4 años viniendo todos los meses. Las dejan genial y el trato es estupendo.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="separator"></div>
+    <section id="servicios">
+        <div class="container">
+            <div class="services-header fade-in">
+                <h2>Nuestros Servicios</h2>
+            </div>
+            <div class="menu-grid">
+                <div class="menu-item fade-in stagger-1 hover-target">
+                    <div class="menu-header">
+                        <h3 class="menu-title">Uñas de Gel</h3>
+                        <div class="menu-line"></div>
+                    </div>
+                    <p class="menu-desc">Resultado natural y duradero, hasta mes y medio de perfección.</p>
+                </div>
+                <div class="menu-item fade-in stagger-2 hover-target">
+                    <div class="menu-header">
+                        <h3 class="menu-title">Uñas Acrílicas</h3>
+                        <div class="menu-line"></div>
+                    </div>
+                    <p class="menu-desc">Resistentes y estructuradas, perfectas para quienes se muerden las uñas.</p>
+                </div>
+                <div class="menu-item fade-in stagger-3 hover-target">
+                    <div class="menu-header">
+                        <h3 class="menu-title">Nail Art & Diseños</h3>
+                        <div class="menu-line"></div>
+                    </div>
+                    <p class="menu-desc">Cualquier diseño que imagines, lo hacemos realidad con precisión.</p>
+                </div>
+                <div class="menu-item fade-in stagger-1 hover-target">
+                    <div class="menu-header">
+                        <h3 class="menu-title">Manicura</h3>
+                        <div class="menu-line"></div>
+                    </div>
+                    <p class="menu-desc">Cuidado completo de manos con un acabado limpio e impecable.</p>
+                </div>
+                <div class="menu-item fade-in stagger-2 hover-target">
+                    <div class="menu-header">
+                        <h3 class="menu-title">Pedicura</h3>
+                        <div class="menu-line"></div>
+                    </div>
+                    <p class="menu-desc">Pies perfectos y relajados con nuestro tratamiento profesional.</p>
+                </div>
+                <div class="menu-item fade-in stagger-3 hover-target">
+                    <div class="menu-header">
+                        <h3 class="menu-title">Extensiones & Esculpidas</h3>
+                        <div class="menu-line"></div>
+                    </div>
+                    <p class="menu-desc">Longitud y forma a tu medida para unas manos estilizadas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="separator"></div>
+    <section id="resultados">
+        <div class="container">
+            <div class="results-header fade-in">
+                <h2>Resultados que hablan por sí solos</h2>
+                <p>Cada uña, una obra de arte. Cada clienta, una historia de confianza.</p>
+            </div>
+            <div class="results-grid fade-in stagger-2">
+                <div class="gallery-item hover-target">
+                    <img src="https://res.cloudinary.com/dfbsqy5ul/image/upload/v1774995924/653638998_18132520000540176_6150605688986465773_n._zk7bby.jpg" alt="Ruby Nails Resultado 1" referrerPolicy="no-referrer">
+                </div>
+                <div class="gallery-item hover-target">
+                    <img src="https://res.cloudinary.com/dfbsqy5ul/image/upload/v1774995924/654077616_18105977608850364_1678448915027209332_n._caevfh.jpg" alt="Ruby Nails Resultado 2" referrerPolicy="no-referrer">
+                </div>
+                <div class="gallery-item hover-target">
+                    <img src="https://res.cloudinary.com/dfbsqy5ul/image/upload/v1774995924/653899666_18056920724456145_7905429827152567628_n._zbfwcq.jpg" alt="Ruby Nails Resultado 3" referrerPolicy="no-referrer">
+                </div>
+                <div class="gallery-item hover-target">
+                    <img src="https://res.cloudinary.com/dfbsqy5ul/image/upload/v1774995924/650066972_17971666208856449_8589504737562523412_n._rdvlhr.jpg" alt="Ruby Nails Resultado 4" referrerPolicy="no-referrer">
+                </div>
+                <div class="gallery-item hover-target">
+                    <img src="https://res.cloudinary.com/dfbsqy5ul/image/upload/v1774995924/641674708_18078923030581326_4455865156136269705_n._esakfh.jpg" alt="Ruby Nails Resultado 5" referrerPolicy="no-referrer">
+                </div>
+                <div class="gallery-item hover-target">
+                    <img src="https://res.cloudinary.com/dfbsqy5ul/image/upload/v1774995924/624237404_18076467125581326_7770462581371957751_n._xmklql.jpg" alt="Ruby Nails Resultado 6" referrerPolicy="no-referrer">
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="resenas" class="reviews-section">
+        <div class="container">
+            <div class="reviews-header fade-in">
+                <h2>Lo que dicen nuestras clientas</h2>
+            </div>
+            <div class="carousel-container fade-in stagger-2">
+                <div class="carousel-track" id="reviewTrack"></div>
+                <div class="carousel-controls">
+                    <button class="carousel-btn hover-target" id="prevBtn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+                    <button class="carousel-btn hover-target" id="nextBtn"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+                </div>
+            </div>
+            <div class="reviews-cta fade-in stagger-3">
+                <a href="https://www.google.com/maps/place/Ruby+Nails+-+Sal%C3%B3n+de+U%C3%B1as+Vietnamita+-+Oviedo/@43.3686765,-5.8468036,17z/data=!4m8!3m7!1s0xd368dc675bb9c6f:0xb13f324a8974f6d!8m2!3d43.3686765!4d-5.8442287!9m1!1b1!16s%2Fg%2F11pwczcyzm" target="_blank" rel="noopener noreferrer" class="btn btn-outline hover-target">Dejar mi reseña en Google</a>
+            </div>
+        </div>
+    </section>
+    <section id="visitanos">
+        <div class="container">
+            <div class="visit-grid">
+                <div class="visit-info fade-in">
+                    <h2>Encuéntranos en Oviedo</h2>
+                    <br><br>
+                    <div class="info-item">
+                        <svg class="info-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <div class="info-text"><h4>Dirección</h4><p>Av. de Pumarín, 31<br>33011 Oviedo, Asturias</p></div>
+                    </div>
+                    <div class="info-item">
+                        <svg class="info-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        <div class="info-text"><h4>Teléfono</h4><p>+34 631 51 20 25</p></div>
+                    </div>
+                    <div class="info-item">
+                        <svg class="info-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <div class="info-text"><h4>Horario</h4><p>Lunes a Sábado: 10:00 – 22:00<br><span style="color: #d9534f;">Domingo: Cerrado</span></p></div>
+                    </div>
+                    <br>
+                    <a href="https://www.google.com/maps/place/Ruby+Nails+-+Sal%C3%B3n+de+U%C3%B1as+Vietnamita+-+Oviedo/@43.362375,-5.8670414,15z/data=!4m6!3m5!1s0xd368dc675bb9c6f:0xb13f324a8974f6d!8m2!3d43.3686765!4d-5.8442287!16s%2Fg%2F11pwczcyzm?entry=ttu&g_ep=EgoyMDI2MDMyNC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="btn btn-outline hover-target" style="align-self: flex-start;">Cómo llegar</a>
+                </div>
+                <div class="map-container fade-in stagger-2">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2892.427932152865!2d-5.846803623351239!3d43.36867647111833!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd368dc675bb9c6f%3A0xb13f324a8974f6d!2sRuby%20Nails%20-%20Sal%C3%B3n%20de%20U%C3%B1as%20Vietnamita%20-%20Oviedo!5e0!3m2!1sen!2ses!4v1709234567890!5m2!1sen!2ses" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="reserva">
+        <div class="container">
+            <div class="reserva-content fade-in">
+                <h2>Reserva tu cita</h2>
+                <p>Escríbenos por WhatsApp o llámanos directamente</p>
+                <div class="reserva-btns">
+                    <a href="https://wa.me/34631512025" target="_blank" rel="noopener noreferrer" class="btn btn-solid hover-target">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        Reservar por WhatsApp
+                    </a>
+                    <a href="tel:+34631512025" class="btn btn-outline hover-target">Llamar al +34 631 51 20 25</a>
+                </div>
+                <p class="reserva-note">Atendemos de lunes a sábado de 10:00 a 22:00h</p>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3 style="font-family: var(--font-display);">Ruby Nails</h3>
+                    <p>Salón de Uñas Vietnamita · Oviedo</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="#servicios" class="hover-target">Servicios</a></li>
+                        <li><a href="#resenas" class="hover-target">Reseñas</a></li>
+                        <li><a href="#visitanos" class="hover-target">Visítanos</a></li>
+                        <li><a href="#reserva" class="hover-target">Reserva</a></li>
+                    </ul>
+                </div>
+                <div class="footer-info">
+                    <h4>Información Útil</h4>
+                    <ul style="list-style: none; color: rgba(255, 255, 255, 0.8); font-size: 0.95rem; line-height: 1.6;">
+                        <li style="margin-bottom: 0.8rem;">📍 C. Nueve de Mayo, 14, 33002 Oviedo, Asturias</li>
+                        <li style="margin-bottom: 0.8rem;">📞 +34 631 51 20 25</li>
+                        <li>🕒 Lunes a Sábado: 10:00 - 22:00</li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>Síguenos</h4>
+                    <div class="social-icons">
+                        <a href="https://www.instagram.com/rubynails_2021/" target="_blank" rel="noopener noreferrer" class="hover-target" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+                        <a href="https://www.facebook.com/p/Ruby-nails-_-Vietnamita-100067595671893/" target="_blank" rel="noopener noreferrer" class="hover-target" aria-label="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+                        <a href="https://www.google.com/maps/place/Ruby+Nails+-+Sal%C3%B3n+de+U%C3%B1as+Vietnamita+-+Oviedo/@43.362375,-5.8670414,15z/data=!4m6!3m5!1s0xd368dc675bb9c6f:0xb13f324a8974f6d!8m2!3d43.3686765!4d-5.8442287!16s%2Fg%2F11pwczcyzm?entry=ttu&g_ep=EgoyMDI2MDMyNC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="hover-target" aria-label="Google Maps"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Ruby Nails Oviedo · Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const cursor = document.getElementById('cursor');
+        const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+        document.addEventListener('mousemove', (e) => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
+        hoverTargets.forEach(target => { target.addEventListener('mouseenter', () => cursor.classList.add('hover')); target.addEventListener('mouseleave', () => cursor.classList.remove('hover')); });
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => { if (window.scrollY > 50) { navbar.classList.add('scrolled'); } else { navbar.classList.remove('scrolled'); } });
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+        const observer = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, observerOptions);
+        document.querySelectorAll('.fade-in').forEach(el => { observer.observe(el); });
+        const reviews = [
+            { stars: 5, text: "Me encanta. Llevo viniendo 4 años y me dejan las uñas genial, el trato estupendo y me duran mes y medio.", author: "Ani Salvador" },
+            { stars: 5, text: "Uñas preciosas, ambiente muy muy bueno.", author: "Miriam Roca" },
+            { stars: 5, text: "Antes me mordía las uñas y ahora me crecen super rápido y con fortaleza. ¡Recomiendo 100%!", author: "Ana Clark" },
+            { stars: 5, text: "De las mejores que encontré. En ningún sitio me las hicieron tan finas y tan bonitas.", author: "Natasha Costa" },
+            { stars: 5, text: "Llevo años yendo todos los meses. Hacen las uñas de gel muy bien y duraderas.", author: "Melanie Carvajal" },
+            { stars: 5, text: "Un trabajo excelente. Mucho cuidado a los detalles.", author: "Breidy De Los Santos" },
+            { stars: 5, text: "El local está muy bien y el trabajo es espectacular. Siempre que puedo voy. ¡Os recomiendo!", author: "Isabel Garrido" },
+            { stars: 5, text: "Fui el mes pasado y repito mañana. Sin ningún problema.", author: "Carlota Labajos" },
+            { stars: 5, text: "Me atendieron muy rápido. Muy amable y un trabajo impecable.", author: "K.P." },
+            { stars: 5, text: "Buen trabajo y trato. Encantada con mis uñas. Fueron delicados y amables. ¡Volvería!", author: "Covadonga Mesa" },
+            { stars: 5, text: "Todo perfecto: el trato, la calidad del trabajo. Recomendable al 100%.", author: "K.A." },
+            { stars: 5, text: "Súper los recomiendo al 100%. Súper amables y atentos, y en diseño te hacen lo que les pidas.", author: "Tran Huy Kien" },
+            { stars: 5, text: "Uñas duraderas más de 4 semanas y eso que han llevado golpes. Increíble duración.", author: "Maxma González" },
+            { stars: 5, text: "Un 10. Muy eficaces en su trabajo y un buen trato.", author: "Ana Isabel Figaredo" },
+            { stars: 5, text: "Muy buena atención y muy amables con las clientas.", author: "Azahara y Aníbal" },
+            { stars: 5, text: "Las uñas me duraron bastante, mes y medio. No me lastimaron nada.", author: "María Fernández" },
+            { stars: 5, text: "Pedicura y uñas perfectas.", author: "Roberto García" },
+            { stars: 5, text: "Espectacular como trabajan.", author: "Melissa Goncalves" },
+            { stars: 5, text: "Perfecto como siempre.", author: "Denia Casado" },
+            { stars: 4, text: "Agradables, rápidos y trabajo muy bien hecho.", author: "Catalina Fernández-Buelta" },
+            { stars: 4, text: "El personal bastante amable y te hacían sentir cómodos.", author: "Yenny Benítez" },
+            { stars: 3, text: "Muy bien, chica muy amable.", author: "Angie Abejita" }
+        ];
+        const track = document.getElementById('reviewTrack');
+        function getStarsHTML(count) {
+            let html = '<div class="stars">';
+            for(let i=0; i<5; i++) {
+                if(i < count) { html += '<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'; }
+                else { html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'; }
+            }
+            html += '</div>'; return html;
+        }
+        reviews.forEach(review => {
+            const card = document.createElement('div');
+            card.className = 'review-card hover-target';
+            card.innerHTML = `<div>${getStarsHTML(review.stars)}<p class="review-text">"${review.text}"</p></div><p class="review-author">— ${review.author}</p>`;
+            track.appendChild(card);
+        });
+        let currentIndex = 0;
+        let cardsPerView = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+        let maxIndex = reviews.length - cardsPerView;
+        function updateCarousel() {
+            const cardWidth = track.children[0].offsetWidth;
+            const gap = parseFloat(window.getComputedStyle(track).gap) || 0;
+            const moveAmount = (cardWidth + gap) * currentIndex;
+            track.style.transform = `translateX(-${moveAmount}px)`;
+        }
+        window.addEventListener('resize', () => {
+            cardsPerView = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+            maxIndex = reviews.length - cardsPerView;
+            if (currentIndex > maxIndex) currentIndex = maxIndex;
+            updateCarousel();
+        });
+        document.getElementById('nextBtn').addEventListener('click', () => { currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1; updateCarousel(); });
+        document.getElementById('prevBtn').addEventListener('click', () => { currentIndex = currentIndex <= 0 ? maxIndex : currentIndex - 1; updateCarousel(); });
+        setInterval(() => { currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1; updateCarousel(); }, 4000);
+    </script>
+</body>
+</html>
